@@ -10,9 +10,9 @@ const SERIES_IDS = {
         'CPI_COMMON': 'CPI-Common'
     },
     ms: {
-        'STATIC_ATABLE_V37151': 'M1+',
-        'STATIC_ATABLE_V37152': 'M1++',
-        'STATIC_ATABLE_V41552801': 'M2++'
+        'V37151': 'M1+',
+        'V37152': 'M1++',
+        'V41552801': 'M2++'
     }
 };
 
@@ -57,7 +57,7 @@ async function loadData() {
         const seriesList = [
             ...Object.keys(SERIES_IDS.cpi),
             ...Object.keys(SERIES_IDS.ms),
-            'STATIC_INFLATIONCALC' // For Indexing calculation
+            'V41690973' // For Indexing calculation
         ].join(',');
 
         // We fetch the last 300 records roughly 25 years or we can just fetch all?
@@ -174,14 +174,14 @@ function drawInflationChart(data, labels) {
     if (!data.length) return;
 
     // Find the CPI value of the first month in the filtered range
-    // We use theSTATIC_INFLATIONCALC index equivalent series for precise base calculation
-    const baseObs = data.find(o => o['STATIC_INFLATIONCALC']);
-    const baseValue = baseObs ? parseFloat(baseObs['STATIC_INFLATIONCALC'].v) : null;
+    // We use Total CPI (V41690973) index equivalent series for precise base calculation
+    const baseObs = data.find(o => o['V41690973']);
+    const baseValue = baseObs ? parseFloat(baseObs['V41690973'].v) : null;
 
     let indexData = [];
     if (baseValue) {
         indexData = data.map(obs => {
-            const currentVal = obs['STATIC_INFLATIONCALC'] ? parseFloat(obs['STATIC_INFLATIONCALC'].v) : null;
+            const currentVal = obs['V41690973'] ? parseFloat(obs['V41690973'].v) : null;
             if (currentVal === null) return null;
             // Formula: (Current Index / Base Index) * 100
             return (currentVal / baseValue) * 100;
