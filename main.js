@@ -69,11 +69,11 @@ async function loadData() {
         rawObservations = data.observations || [];
 
         // Compute YoY for money supply series
-        // JSON observations API array is DESCENDING (Newest at index 0, Oldest at end)
+        // JSON observations API array is ASCENDING when queried by start_date (Oldest at index 0, Newest at end)
         const msKeys = Object.keys(SERIES_IDS.ms);
-        for (let i = 0; i < rawObservations.length - 12; i++) {
+        for (let i = 12; i < rawObservations.length; i++) {
             const currentObs = rawObservations[i];
-            const pastObs = rawObservations[i + 12]; // +12 goes back 12 months in time
+            const pastObs = rawObservations[i - 12]; // -12 goes back 12 months in time
 
             msKeys.forEach(key => {
                 if (currentObs[key] && pastObs[key]) {
@@ -88,11 +88,6 @@ async function loadData() {
                 }
             });
         }
-
-        // The observations arrive Descending (Newest -> Oldest).
-        // For ChartJS left-to-right drawing and correct filter order,
-        // we must reverse the array to Ascending (Oldest -> Newest).
-        rawObservations.reverse();
     } catch (e) {
         console.error("Error fetching BoC data:", e);
         alert("Failed to load Bank of Canada data.");
