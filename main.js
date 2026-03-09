@@ -67,6 +67,26 @@ async function loadData() {
         const data = await response.json();
 
         rawObservations = data.observations || [];
+
+        // Compute YoY for money supply series
+        const msKeys = Object.keys(SERIES_IDS.ms);
+        for (let i = 12; i < rawObservations.length; i++) {
+            const currentObs = rawObservations[i];
+            const pastObs = rawObservations[i - 12];
+
+            msKeys.forEach(key => {
+                if (currentObs[key] && pastObs[key]) {
+                    const currentVal = parseFloat(currentObs[key].v);
+                    const pastVal = parseFloat(pastObs[key].v);
+
+                    if (pastVal !== 0) {
+                        currentObs[`yoy_${key}`] = {
+                            v: ((currentVal / pastVal) - 1) * 100
+                        };
+                    }
+                }
+            });
+        }
     } catch (e) {
         console.error("Error fetching BoC data:", e);
         alert("Failed to load Bank of Canada data.");
@@ -118,11 +138,12 @@ function drawDualChart(data, labels) {
         });
     });
 
-    // Money Supply Data
+    // Money Supply Data (YoY computed)
     activeMs.forEach((series, i) => {
+        const yoyKey = `yoy_${series}`;
         datasets.push({
-            label: SERIES_IDS.ms[series],
-            data: data.map(obs => obs[series] ? parseFloat(obs[series].v) : null),
+            label: SERIES_IDS.ms[series] + ' (YoY %)',
+            data: data.map(obs => obs[yoyKey] ? parseFloat(obs[yoyKey].v) : null),
             borderColor: colors.ms[i % colors.ms.length],
             borderWidth: 2,
             pointRadius: 0,
