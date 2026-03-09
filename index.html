@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank of Canada Economic Dashboard</title>
+    <meta name="description"
+        content="Dashboard tracking Canadian Inflation and Money Supply metrics using live BoC data.">
+    <!-- Google Fonts: Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1>Bank of Canada <span class="badge">Live</span></h1>
+                <p>Inflation & Money Supply Dashboard</p>
+            </div>
+            <div class="header-links">
+                <a href="https://www.youtube.com/watch?v=ce1wK3DvOTY" target="_blank" title="Trudeau">
+                    <img src="./Trudeau.png" alt="Trudeau" class="logo-link">
+                </a>
+                <a href="https://www.youtube.com/watch?v=AOk3wBuQNcE" target="_blank" title="Hobo">
+                    <img src="./hobo.jpg" alt="Hobo" class="logo-link">
+                </a>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Controls Overlay / Section -->
+            <section class="controls-section glass-panel">
+                <div class="control-group">
+                    <h3>Date Range</h3>
+                    <div class="date-selector">
+                        <div class="input-wrapper">
+                            <label for="start-date">From</label>
+                            <input type="date" id="start-date" value="2000-01-01">
+                        </div>
+                        <div class="input-wrapper">
+                            <label for="end-date">To</label>
+                            <input type="date" id="end-date">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3>Inflation Series (CPI)</h3>
+                    <div class="slicer-row cpi-slicers">
+                        <label class="slicer-btn cpi-btn">
+                            <input type="checkbox" value="CPI_TRIM" id="chk-cpi-trim" checked>
+                            <span class="slicer-text">CPI-Trim</span>
+                        </label>
+                        <label class="slicer-btn cpi-btn">
+                            <input type="checkbox" value="CPI_MEDIAN" id="chk-cpi-med" checked>
+                            <span class="slicer-text">CPI-Median</span>
+                        </label>
+                        <label class="slicer-btn cpi-btn">
+                            <input type="checkbox" value="CPI_COMMON" id="chk-cpi-com" checked>
+                            <span class="slicer-text">CPI-Common</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3>Money Supply (Gross)</h3>
+                    <div class="slicer-row ms-slicers">
+                        <label class="slicer-btn ms-btn">
+                            <input type="checkbox" value="STATIC_ATABLE_V37151" id="chk-ms-m1">
+                            <span class="slicer-text">M1+</span>
+                        </label>
+                        <label class="slicer-btn ms-btn">
+                            <input type="checkbox" value="STATIC_ATABLE_V37152" id="chk-ms-m1pp">
+                            <span class="slicer-text">M1++</span>
+                        </label>
+                        <label class="slicer-btn ms-btn">
+                            <input type="checkbox" value="STATIC_ATABLE_V41552801" id="chk-ms-m2pp" checked>
+                            <span class="slicer-text">M2++</span>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Charts Grid -->
+            <section class="charts-section">
+                <div class="chart-container glass-panel">
+                    <div class="chart-header">
+                        <h2>CPI vs. Money Supply Growth</h2>
+                        <span class="loader" id="loader-1"></span>
+                    </div>
+                    <div class="canvas-wrapper">
+                        <canvas id="dualChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-container glass-panel">
+                    <div class="chart-header">
+                        <h2>Indexed Inflation Growth</h2>
+                        <span class="loader" id="loader-2"></span>
+                    </div>
+                    <p class="chart-subtext">Baseline (100) dynamically set to selected start date.</p>
+                    <div class="canvas-wrapper">
+                        <canvas id="inflationChart"></canvas>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Data Source: Bank of Canada Valet API</p>
+        </footer>
+    </div>
+
+    <!-- Script Application -->
+    <script type="module" src="./main.js"></script>
+</body>
+
+</html>
