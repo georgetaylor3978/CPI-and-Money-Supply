@@ -1,5 +1,5 @@
-import Chart from 'chart.js/auto';
-import { parseISO, isAfter, isBefore, format } from 'date-fns';
+import Chart from 'https://cdn.jsdelivr.net/npm/chart.js/auto/+esm';
+import { parseISO, isAfter, isBefore, format } from 'https://cdn.jsdelivr.net/npm/date-fns/+esm';
 
 const API_ENDPOINT = 'https://www.bankofcanada.ca/valet/observations/';
 // Series mappings
