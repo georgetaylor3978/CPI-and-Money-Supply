@@ -49,24 +49,42 @@ async function init() {
     updateCharts();
 }
 
+const CACHE_KEY = 'boc_inflation_cache';
+const CACHE_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
+
 async function loadData() {
     loader1.classList.add('active');
     loader2.classList.add('active');
 
     try {
+        // --- Cache check ---
+        const cached = localStorage.getItem(CACHE_KEY);
+        if (cached) {
+            const { timestamp, observations } = JSON.parse(cached);
+            if (Date.now() - timestamp < CACHE_MAX_AGE_MS) {
+                rawObservations = observations;
+                loader1.classList.remove('active');
+                loader2.classList.remove('active');
+                return; // Serve from cache, skip fetch
+            }
+        }
+
         const seriesList = [
             ...Object.keys(SERIES_IDS.cpi),
             ...Object.keys(SERIES_IDS.ms),
             'V41690973' // For Indexing calculation
         ].join(',');
 
-        // We fetch the last 300 records roughly 25 years or we can just fetch all?
-        // Fetching all might take a tad longer but is cached. Let's fetch all relevant to 2000-onwards if possible, or just recent=360
-        // Wait, Valet allows everything if we don't specify recent, or we can use start_date query param. Let's fetch all since 2000.
         const response = await fetch(`${API_ENDPOINT}${seriesList}/json?start_date=2000-01-01`);
         const data = await response.json();
 
         rawObservations = data.observations || [];
+
+        // Save to cache
+        localStorage.setItem(CACHE_KEY, JSON.stringify({
+            timestamp: Date.now(),
+            observations: rawObservations
+        }));
 
         // Compute YoY for money supply series
         // JSON observations API array is ASCENDING when queried by start_date (Oldest at index 0, Newest at end)
