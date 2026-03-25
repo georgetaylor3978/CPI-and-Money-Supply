@@ -113,7 +113,7 @@ function updateCharts() {
     const filteredData = filterDataByDateRange();
 
     // Extract dates for labels
-    const labels = filteredData.map(obs => obs.d);
+    const labels = filteredData.map(obs => obs.d.slice(0, 7));
 
     drawDualChart(filteredData, labels);
     drawInflationChart(filteredData, labels);
@@ -134,7 +134,7 @@ function drawDualChart(data, labels) {
             borderColor: colors.cpi[i % colors.cpi.length],
             borderWidth: 2,
             pointRadius: 0,
-            yAxisID: 'y',
+            yAxisID: 'y1',
             tension: 0.1
         });
     });
@@ -148,7 +148,7 @@ function drawDualChart(data, labels) {
             borderColor: colors.ms[i % colors.ms.length],
             borderWidth: 2,
             pointRadius: 0,
-            yAxisID: 'y1',
+            yAxisID: 'y',
             tension: 0.1
         });
     });
@@ -172,16 +172,16 @@ function drawDualChart(data, labels) {
                 },
                 y: {
                     type: 'linear',
-                    display: activeCpi.length > 0,
+                    display: activeMs.length > 0,
                     position: 'left',
-                    title: { display: true, text: 'CPI (%)', color: 'rgba(255,255,255,0.7)' },
+                    title: { display: true, text: 'Money Supply (%)', color: 'rgba(255,255,255,0.7)', font: { size: 13 } },
                     grid: { color: 'rgba(255, 255, 255, 0.05)' }
                 },
                 y1: {
                     type: 'linear',
-                    display: activeMs.length > 0,
+                    display: activeCpi.length > 0,
                     position: 'right',
-                    title: { display: true, text: 'Money Supply (%)', color: 'rgba(255,255,255,0.7)' },
+                    title: { display: true, text: 'CPI (%)', color: 'rgba(255,255,255,0.7)', font: { size: 13 } },
                     grid: { drawOnChartArea: false }
                 }
             },
@@ -240,7 +240,7 @@ function drawInflationChart(data, labels) {
                     grid: { color: 'rgba(255, 255, 255, 0.05)' }
                 },
                 y: {
-                    title: { display: true, text: 'Index Value', color: 'rgba(255,255,255,0.7)' },
+                    title: { display: true, text: 'Index Value', color: 'rgba(255,255,255,0.7)', font: { size: 13 } },
                     grid: { color: 'rgba(255, 255, 255, 0.05)' }
                 }
             },
