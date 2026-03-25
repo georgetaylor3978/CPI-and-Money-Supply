@@ -18,7 +18,17 @@ themeCheckbox.addEventListener('change', () => {
     const isLight = themeCheckbox.checked;
     localStorage.setItem('boc_theme', isLight ? 'light' : 'dark');
     applyTheme(isLight);
+    updateCharts(); // redraw so chart text colors update
 });
+
+function getThemeColors() {
+    const isLight = document.body.classList.contains('light-theme');
+    return {
+        text:     isLight ? '#1c2128'              : '#e6edf3',
+        axisTitle:isLight ? 'rgba(28,33,40,0.85)'  : 'rgba(255,255,255,0.7)',
+        grid:     isLight ? 'rgba(0,0,0,0.08)'     : 'rgba(255,255,255,0.05)'
+    };
+}
 
 const API_ENDPOINT = 'https://www.bankofcanada.ca/valet/observations/';
 // Series mappings
@@ -205,25 +215,28 @@ function drawDualChart(data, labels) {
             interaction: { mode: 'index', intersect: false },
             scales: {
                 x: {
-                    grid: { color: 'rgba(255, 255, 255, 0.05)' }
+                    grid: { color: getThemeColors().grid },
+                    ticks: { color: getThemeColors().text }
                 },
                 y: {
                     type: 'linear',
                     display: activeMs.length > 0,
                     position: 'left',
-                    title: { display: true, text: 'Money Supply (%)', color: 'rgba(255,255,255,0.7)', font: { size: 13 } },
-                    grid: { color: 'rgba(255, 255, 255, 0.05)' }
+                    title: { display: true, text: 'Money Supply (%)', color: getThemeColors().axisTitle, font: { size: 13 } },
+                    grid: { color: getThemeColors().grid },
+                    ticks: { color: getThemeColors().text }
                 },
                 y1: {
                     type: 'linear',
                     display: activeCpi.length > 0,
                     position: 'right',
-                    title: { display: true, text: 'CPI (%)', color: 'rgba(255,255,255,0.7)', font: { size: 13 } },
-                    grid: { drawOnChartArea: false }
+                    title: { display: true, text: 'CPI (%)', color: getThemeColors().axisTitle, font: { size: 13 } },
+                    grid: { drawOnChartArea: false },
+                    ticks: { color: getThemeColors().text }
                 }
             },
             plugins: {
-                legend: { labels: { color: '#e6edf3' } }
+                legend: { labels: { color: getThemeColors().text } }
             }
         }
     });
@@ -274,15 +287,17 @@ function drawInflationChart(data, labels) {
             interaction: { mode: 'index', intersect: false },
             scales: {
                 x: {
-                    grid: { color: 'rgba(255, 255, 255, 0.05)' }
+                    grid: { color: getThemeColors().grid },
+                    ticks: { color: getThemeColors().text }
                 },
                 y: {
-                    title: { display: true, text: 'Index Value', color: 'rgba(255,255,255,0.7)', font: { size: 13 } },
-                    grid: { color: 'rgba(255, 255, 255, 0.05)' }
+                    title: { display: true, text: 'Index Value', color: getThemeColors().axisTitle, font: { size: 13 } },
+                    grid: { color: getThemeColors().grid },
+                    ticks: { color: getThemeColors().text }
                 }
             },
             plugins: {
-                legend: { labels: { color: '#e6edf3' } }
+                legend: { labels: { color: getThemeColors().text } }
             }
         }
     });
