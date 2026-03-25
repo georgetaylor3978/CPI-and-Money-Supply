@@ -49,7 +49,7 @@ async function init() {
     updateCharts();
 }
 
-const CACHE_KEY = 'boc_inflation_cache';
+const CACHE_KEY = 'boc_inflation_cache_v2';
 const CACHE_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 
 async function loadData() {
@@ -80,18 +80,12 @@ async function loadData() {
 
         rawObservations = data.observations || [];
 
-        // Save to cache
-        localStorage.setItem(CACHE_KEY, JSON.stringify({
-            timestamp: Date.now(),
-            observations: rawObservations
-        }));
-
-        // Compute YoY for money supply series
-        // JSON observations API array is ASCENDING when queried by start_date (Oldest at index 0, Newest at end)
+        // Compute YoY for money supply series FIRST, then cache
+        // JSON observations array is ASCENDING (oldest at index 0)
         const msKeys = Object.keys(SERIES_IDS.ms);
         for (let i = 12; i < rawObservations.length; i++) {
             const currentObs = rawObservations[i];
-            const pastObs = rawObservations[i - 12]; // -12 goes back 12 months in time
+            const pastObs = rawObservations[i - 12];
 
             msKeys.forEach(key => {
                 if (currentObs[key] && pastObs[key]) {
@@ -106,6 +100,12 @@ async function loadData() {
                 }
             });
         }
+
+        // Save to cache AFTER YoY is computed so yoy_ fields are included
+        localStorage.setItem(CACHE_KEY, JSON.stringify({
+            timestamp: Date.now(),
+            observations: rawObservations
+        }));
     } catch (e) {
         console.error("Error fetching BoC data:", e);
         alert("Failed to load Bank of Canada data.");
