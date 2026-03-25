@@ -1,6 +1,25 @@
 import Chart from 'https://cdn.jsdelivr.net/npm/chart.js/auto/+esm';
 import { parseISO, isAfter, isBefore, format } from 'https://cdn.jsdelivr.net/npm/date-fns/+esm';
 
+// --- Theme Toggle ---
+const themeCheckbox = document.getElementById('theme-checkbox');
+const toggleIcon = document.getElementById('toggle-icon');
+
+function applyTheme(isLight) {
+    document.body.classList.toggle('light-theme', isLight);
+    toggleIcon.textContent = isLight ? '☀️' : '🌙';
+    themeCheckbox.checked = isLight;
+}
+
+// Restore saved preference
+applyTheme(localStorage.getItem('boc_theme') === 'light');
+
+themeCheckbox.addEventListener('change', () => {
+    const isLight = themeCheckbox.checked;
+    localStorage.setItem('boc_theme', isLight ? 'light' : 'dark');
+    applyTheme(isLight);
+});
+
 const API_ENDPOINT = 'https://www.bankofcanada.ca/valet/observations/';
 // Series mappings
 const SERIES_IDS = {
